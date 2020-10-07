@@ -44,6 +44,7 @@
 #include "SkeletalAnimation.h"
 
 #include <Urho3D/DebugNew.h>
+#include "move_camera.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(SkeletalAnimation)
 
@@ -78,6 +79,9 @@ void SkeletalAnimation::Start()
 
 void SkeletalAnimation::CreateScene()
 {
+
+    camera_move = SharedPtr<CameraMove>(new CameraMove(context_));
+
     auto* cache = GetSubsystem<ResourceCache>();
 
     scene_ = new Scene(context_);
@@ -114,6 +118,15 @@ void SkeletalAnimation::CreateScene()
     // Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
     light->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
 
+    // Create the camera. Limit far clip distance to match the fog
+    cameraNode_ = scene_->CreateChild("Camera");
+    auto* camera = cameraNode_->CreateComponent<Camera>();
+    camera->SetFarClip(300.0f);
+
+    // Set an initial position for the camera scene node above the plane
+    cameraNode_->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
+
+    camera_move->SetParameters(1.0f,1.0f,cameraNode_);
     // Create animated models
     const unsigned NUM_MODELS = 30;
     const float MODEL_MOVE_SPEED = 2.0f;
@@ -122,7 +135,7 @@ void SkeletalAnimation::CreateScene()
 
     for (unsigned i = 0; i < NUM_MODELS; ++i)
     {
-        Node* modelNode = scene_->CreateChild("Jill");
+        Node* modelNode = scene_->CreateChild(i == 0 ? "Lina" : "Jill");
         modelNode->SetPosition(Vector3(Random(40.0f) - 20.0f, 0.0f, Random(40.0f) - 20.0f));
         modelNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
 
@@ -150,14 +163,7 @@ void SkeletalAnimation::CreateScene()
         auto* mover = modelNode->CreateComponent<Mover>();
         mover->SetParameters(MODEL_MOVE_SPEED, MODEL_ROTATE_SPEED, bounds);
     }
-
-    // Create the camera. Limit far clip distance to match the fog
-    cameraNode_ = scene_->CreateChild("Camera");
-    auto* camera = cameraNode_->CreateComponent<Camera>();
-    camera->SetFarClip(300.0f);
-
-    // Set an initial position for the camera scene node above the plane
-    cameraNode_->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
+    
 }
 
 void SkeletalAnimation::CreateInstructions()
@@ -166,7 +172,7 @@ void SkeletalAnimation::CreateInstructions()
     auto* ui = GetSubsystem<UI>();
 
     // Construct new Text object, set string to display and font to use
-    auto* instructionText = ui->GetRoot()->CreateChild<Text>();
+    auto* instructionText = ui->GetRoot()->CreateChild<Text>("instructionText",0);
     instructionText->SetText(
         "Use WASD keys and mouse/touch to move\n"
         "Space to toggle debug geometry"
@@ -199,11 +205,12 @@ void SkeletalAnimation::SubscribeToEvents()
     // done with defining the draw calls for the viewports (but before actually executing them.) We will request debug geometry
     // rendering during that event
     SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(SkeletalAnimation, HandlePostRenderUpdate));
+    SubscribeToEvent(E_MOUSEMOVE,URHO3D_HANDLER(SkeletalAnimation, HandleMouseMove));
 }
 
 void SkeletalAnimation::MoveCamera(float timeStep)
 {
-    // Do not move if the UI has a focused element (the console)
+    
     if (GetSubsystem<UI>()->GetFocusElement())
         return;
 
@@ -213,29 +220,37 @@ void SkeletalAnimation::MoveCamera(float timeStep)
     const float MOVE_SPEED = 20.0f;
     // Mouse sensitivity as degrees per pixel
     const float MOUSE_SENSITIVITY = 0.1f;
-
-    // Use this frame's mouse motion to adjust camera node yaw and pitch. Clamp the pitch between -90 and 90 degrees
-    IntVector2 mouseMove = input->GetMouseMove();
-    yaw_ += MOUSE_SENSITIVITY * mouseMove.x_;
-    pitch_ += MOUSE_SENSITIVITY * mouseMove.y_;
-    pitch_ = Clamp(pitch_, -90.0f, 90.0f);
-
-    // Construct new orientation for the camera scene node from yaw and pitch. Roll is fixed to zero
-    cameraNode_->SetRotation(Quaternion(pitch_, yaw_, 0.0f));
-
     // Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
-    if (input->GetKeyDown(KEY_W))
-        cameraNode_->Translate(Vector3::FORWARD * MOVE_SPEED * timeStep);
-    if (input->GetKeyDown(KEY_S))
-        cameraNode_->Translate(Vector3::BACK * MOVE_SPEED * timeStep);
-    if (input->GetKeyDown(KEY_A))
-        cameraNode_->Translate(Vector3::LEFT * MOVE_SPEED * timeStep);
-    if (input->GetKeyDown(KEY_D))
-        cameraNode_->Translate(Vector3::RIGHT * MOVE_SPEED * timeStep);
-
+    if(!camera_move_enable)
+    {
+        if (input->GetKeyDown(KEY_W))
+            cameraNode_->Translate(Vector3::FORWARD * MOVE_SPEED * timeStep);
+        if (input->GetKeyDown(KEY_S))
+            cameraNode_->Translate(Vector3::BACK * MOVE_SPEED * timeStep);
+        if (input->GetKeyDown(KEY_A))
+            cameraNode_->Translate(Vector3::LEFT * MOVE_SPEED * timeStep);
+        if (input->GetKeyDown(KEY_D))
+            cameraNode_->Translate(Vector3::RIGHT * MOVE_SPEED * timeStep);
+    }
     // Toggle debug geometry with space
     if (input->GetKeyPress(KEY_SPACE))
         drawDebug_ = !drawDebug_;
+    if(input->GetKeyPress(KEY_F))
+    {
+        
+        if(camera_move_enable)
+        {
+            auto lina = scene_->GetChild("Lina");
+            if(lina)lina->RemoveComponent(camera_move);
+            yaw_ = cameraNode_->GetRotation().YawAngle();
+            pitch_ = cameraNode_->GetRotation().PitchAngle();
+        }else{
+            auto lina = scene_->GetChild("Lina");
+            if(lina)lina->AddComponent(camera_move,1,CreateMode::LOCAL);
+        }
+        camera_move_enable = !camera_move_enable;
+        
+    }
 }
 
 void SkeletalAnimation::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -257,3 +272,83 @@ void SkeletalAnimation::HandlePostRenderUpdate(StringHash eventType, VariantMap&
     if (drawDebug_)
         GetSubsystem<Renderer>()->DrawDebugGeometry(false);
 }
+
+void SkeletalAnimation::HandleMouseMove(StringHash eventType, VariantMap& eventData)
+{
+    // Do not move if the UI has a focused element (the console)
+    if (camera_move_enable || GetSubsystem<UI>()->GetFocusElement())
+        return;
+
+    auto* input = GetSubsystem<Input>();
+
+    // Movement speed as world units per second
+    const float MOVE_SPEED = 20.0f;
+    // Mouse sensitivity as degrees per pixel
+    const float MOUSE_SENSITIVITY = 0.1f;
+
+    // Use this frame's mouse motion to adjust camera node yaw and pitch. Clamp the pitch between -90 and 90 degrees
+    IntVector2 mouseMove = input->GetMouseMove();
+    yaw_ += MOUSE_SENSITIVITY * mouseMove.x_;
+    pitch_ += MOUSE_SENSITIVITY * mouseMove.y_;
+    pitch_ = Clamp(pitch_, -90.0f, 90.0f);
+    // Construct new orientation for the camera scene node from yaw and pitch. Roll is fixed to zero
+    cameraNode_->SetRotation(Quaternion(pitch_, yaw_, 0.0f));
+}
+
+#ifndef MOVE_CAMERA_IMPL_CPP
+#define MOVE_CAMERA_IMPL_CPP
+#include <Urho3D/Graphics/AnimatedModel.h>
+#include <Urho3D/Graphics/AnimationState.h>
+#include <Urho3D/Scene/Scene.h>
+
+#include "move_camera.h"
+
+#include <Urho3D/DebugNew.h>
+
+CameraMove::CameraMove(Context* context) :
+    LogicComponent(context),
+    moveSpeed_(0.0f),
+    rotationSpeed_(0.0f)
+{
+    // Only the scene update event is needed: unsubscribe from the rest for optimization
+    SetUpdateEventMask(USE_UPDATE);
+}
+
+void CameraMove::SetParameters(float moveSpeed, float rotationSpeed, SharedPtr<Node> camera)
+{
+    moveSpeed_ = moveSpeed;
+    rotationSpeed_ = rotationSpeed;
+    camera_ = std::move(camera);
+}
+
+void CameraMove::Update(float timeStep)
+{
+    auto dir = node_->GetDirection().Normalized();
+    auto pos = node_->GetPosition() - (dir * 4.f);
+    pos.y_ += 3.2f;
+    auto src = camera_->GetPosition();
+    auto dd = pos - src;
+    if(dd.Length() < 0.1f)
+    {
+        camera_->SetPosition(pos);
+    }else{
+        camera_->SetPosition(src + dd * 0.1f);
+    }
+    auto look_pos = node_->GetPosition();
+    look_pos += dir * 4.6f;
+   // use look at
+    
+    //use rotate
+    auto src_pos = camera_->GetDirection().Normalized() + camera_->GetPosition();
+    auto cd = look_pos - src_pos;
+    if(cd.Length() > 0.1f)
+    {
+        auto n_look_pos = cd * 0.05f + src_pos;
+        camera_->LookAt( n_look_pos );
+    }else{
+        camera_->LookAt( look_pos );
+    }
+    
+}
+
+#endif //MOVE_CAMERA_IMPL_CPP

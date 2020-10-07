@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Sample.h"
+#include "move_camera.h"
 
 namespace Urho3D
 {
@@ -55,11 +56,11 @@ protected:
     String GetScreenJoystickPatchString() const override { return
         "<patch>"
         "    <remove sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]/attribute[@name='Is Visible']\" />"
-        "    <replace sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]/element[./attribute[@name='Name' and @value='Label']]/attribute[@name='Text']/@value\">Debug</replace>"
+        "    <replace sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]/element[./attribute[@name='Name' and @value='Label']]/attribute[@name='Text']/@value\">Follow</replace>"
         "    <add sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]\">"
         "        <element type=\"Text\">"
         "            <attribute name=\"Name\" value=\"KeyBinding\" />"
-        "            <attribute name=\"Text\" value=\"SPACE\" />"
+        "            <attribute name=\"Text\" value=\"F\" />"
         "        </element>"
         "    </add>"
         "</patch>";
@@ -81,6 +82,11 @@ private:
     /// Handle the post-render update event.
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
 
+    void HandleMouseMove(StringHash eventType, VariantMap& eventData);
+
     /// Flag for drawing debug geometry.
     bool drawDebug_;
+    bool camera_move_enable = false;
+
+    SharedPtr<CameraMove> camera_move;
 };
