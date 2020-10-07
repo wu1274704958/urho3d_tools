@@ -32,5 +32,9 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../CMake/Modules)
 # Include UrhoCommon.cmake module after setting project name
 include (UrhoCommon)
 
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Tools/Urho3DPlayer Urho3DPlayer)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples Samples)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples)
+
+#add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Tools/Urho3DPlayer Urho3DPlayer)
+#add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples Samples)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/01_HelloWorld Samples)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/03_Sprites Sprites)

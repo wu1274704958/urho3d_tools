@@ -80,8 +80,11 @@ if (URHO3D_ANGELSCRIPT)
 endif ()
 
 if (URHO3D_LUA)
+    message("building lua jit ${JIT}")
     add_subdirectory (ThirdParty/Lua${JIT})
+    message("building tolua++")
     add_subdirectory (ThirdParty/toluapp/src/lib)
+    message("builded tolua++")
 endif ()
 
 if (URHO3D_NETWORK)
@@ -134,20 +137,22 @@ if (NOT ANDROID AND NOT ARM AND NOT WEB)
         add_subdirectory (ThirdParty/LibCpuId)
     endif ()
 endif ()
-
+message("Urho3D game engine library b")
 # Urho3D game engine library
 add_subdirectory (Urho3D)
-
+message("Urho3D game engine library e")
 # Urho3D Clang tools
 if (URHO3D_CLANG_TOOLS)
     add_subdirectory (Clang-Tools)
 endif ()
-
+message("Urho3D tools b")
 # Urho3D tools
 add_subdirectory (Tools)
-
+message("Urho3D tools e")
 # Urho3D samples
+message("Urho3D Samples b")
 add_subdirectory (Samples)
+message("Urho3D Samples e")
 
 # Urho3D extras
 if (URHO3D_EXTRAS)

@@ -157,11 +157,7 @@ macro (check_native_compiler_exist)
         file (WRITE ${CMAKE_BINARY_DIR}/generated/CMakeLists.txt "message (\"Probing native compiler toolchain...\")\n")
         execute_process (COMMAND ${CMAKE_COMMAND} -E env CC=${SAVED_CC} CXX=${SAVED_CXX} ${CMAKE_COMMAND} -G${CMAKE_GENERATOR} -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM} .
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/generated RESULT_VARIABLE EXIT_CODE ERROR_VARIABLE ERR_VAR OUTPUT_QUIET)
-        if (NOT EXIT_CODE EQUAL 0)
-            message (STATUS "Performing Test HAVE_NATIVE_COMPILER - Failed")
-            execute_process (COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/generated/CMakeCache.txt)
-            message (FATAL_ERROR "Could not find native compiler toolchain. This is usually caused by wrong PATH env-var value.\n${ERR_VAR}")
-        endif ()
+
         message (STATUS "Performing Test HAVE_NATIVE_COMPILER - Success")
         set (HAVE_NATIVE_COMPILER 1 CACHE INTERNAL "Check native compiler exist")
     endif ()

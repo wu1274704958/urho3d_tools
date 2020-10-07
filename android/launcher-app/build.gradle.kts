@@ -30,6 +30,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\wushu\\sign\\wws.jks")
+            storePassword = "142539"
+            keyPassword = "142539"
+            keyAlias = "default"
+        }
+    }
     ndkVersion = ndkSideBySideVersion
     compileSdkVersion(30)
     defaultConfig {
@@ -66,6 +74,7 @@ android {
                 }
             }
         }
+        signingConfig = signingConfigs.getByName("release")
         splits {
             abi {
                 isEnable = project.hasProperty("ANDROID_ABI")
