@@ -35,7 +35,7 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("C:\\Users\\wushu\\sign\\wws.jks")
+            storeFile = file("wws.jks")
             storePassword = "142539"
             keyPassword = "142539"
             keyAlias = "default"

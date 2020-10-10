@@ -146,3 +146,4 @@ android/urho3d-lib/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_1_
 android/urho3d-lib/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_common_1_3_72_jar.xml
 android/urho3d-lib/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_jdk7_1_3_72_jar.xml
 android/urho3d-lib/.idea/libraries/Gradle__org_jetbrains_kotlin_kotlin_stdlib_jdk8_1_3_72_jar.xml
+.vscode/settings.json
