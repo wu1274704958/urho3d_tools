@@ -22,6 +22,12 @@
 
 package com.github.urho3d.launcher
 
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import com.github.urho3d.UrhoActivity
 
 class MainActivity : UrhoActivity() {
@@ -48,6 +54,30 @@ class MainActivity : UrhoActivity() {
         libraryNames.add(arguments[0])
 
         super.onLoadLibrary(libraryNames)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.e("===","onCreate()")
+        window.decorView
+            .setOnSystemUiVisibilityChangeListener { setHideVirtualKey(window) }
+
+    }
+
+    fun setHideVirtualKey(window: Window) {
+        //保持布局状态
+        Log.e("===","setHideVirtualKey()");
+        var uiOptions: Int = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or  //全屏
+                View.SYSTEM_UI_FLAG_FULLSCREEN or  //隐藏导航栏
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        uiOptions = if (Build.VERSION.SDK_INT >= 19) {
+            uiOptions or 0x00001000
+        } else {
+            uiOptions or View.SYSTEM_UI_FLAG_LOW_PROFILE
+        }
+        window.getDecorView().setSystemUiVisibility(uiOptions)
     }
 
 }

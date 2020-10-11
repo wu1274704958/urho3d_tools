@@ -65,6 +65,8 @@ public:
     /// Cleanup after the main loop. Called by Application.
     void Stop() override;
 
+    virtual bool is_fullscreen();
+
 protected:
     /// Return XML patch instructions for screen joystick layout for a specific sample app, if any.
     virtual String GetScreenJoystickPatchString() const { return String::EMPTY; }

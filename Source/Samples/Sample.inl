@@ -59,7 +59,7 @@ void Sample::Setup()
     // Modify engine startup parameters
     engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
     engineParameters_[EP_LOG_NAME]     = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() + ".log";
-    engineParameters_[EP_FULL_SCREEN]  = false;
+    engineParameters_[EP_FULL_SCREEN]  = is_fullscreen();
     engineParameters_[EP_HEADLESS]     = false;
     engineParameters_[EP_SOUND]        = false;
 
@@ -68,6 +68,14 @@ void Sample::Setup()
     // The second and third entries are possible relative paths from the installed program/bin directory to the asset directory -- these entries are for binary when it is in the Urho3D SDK installation location
     if (!engineParameters_.Contains(EP_RESOURCE_PREFIX_PATHS))
         engineParameters_[EP_RESOURCE_PREFIX_PATHS] = ";../share/Resources;../share/Urho3D/Resources";
+}
+
+bool Sample::is_fullscreen()
+{
+#if defined(__ANDROID__)
+    return true;
+#endif
+    return false;
 }
 
 void Sample::Start()
