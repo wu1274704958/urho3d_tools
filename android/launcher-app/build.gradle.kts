@@ -32,7 +32,7 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("wws.jks")
+            storeFile = file("../../wws.jks")
             storePassword = "142539"
             keyPassword = "142539"
             keyAlias = "default"
