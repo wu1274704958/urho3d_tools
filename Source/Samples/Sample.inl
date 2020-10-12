@@ -120,7 +120,7 @@ void Sample::InitTouchInput()
     String patchForPos =    "<patch>"
                             "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Hat0']]/attribute[@name='Size']/@value\">135 135</replace>"
                             "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Hat0']]/attribute[@name='Position']/@value\">228 -152</replace>"
-                            "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Button0']]/attribute[@name='Position']/@value\">-228 -160</replace>"
+                            "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Button0']]/attribute[@name='Position']/@value\">-184 -160</replace>"
                             "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Button1']]/attribute[@name='Position']/@value\">-228 -52</replace>"
                             "</patch>";
     if (!patchString.Empty())
