@@ -108,7 +108,12 @@ void Sample::InitTouchInput()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Input* input = GetSubsystem<Input>();
     XMLFile* layout = cache->GetResource<XMLFile>("UI/ScreenJoystick_Samples.xml");
-    const String& patchString = GetScreenJoystickPatchString();
+    String patchString = GetScreenJoystickPatchString();
+    String patchForPos =    "<patch>"
+                            "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Hat0']]/attribute[@name='Position']/@value\">228 -76</replace>"
+                            "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Button0']]/attribute[@name='Position']/@value\">-228 -140</replace>"
+                            "<replace sel=\"/element/element[./attribute[@name='Name'and@value='Button1']]/attribute[@name='Position']/@value\">-228 -32</replace>"
+                            "</patch>";
     if (!patchString.Empty())
     {
         // Patch the screen joystick layout further on demand
@@ -116,6 +121,9 @@ void Sample::InitTouchInput()
         if (patchFile->FromString(patchString))
             layout->Patch(patchFile);
     }
+    SharedPtr<XMLFile> patchFile(new XMLFile(context_));
+    if (patchFile->FromString(patchForPos))
+        layout->Patch(patchFile);
     screenJoystickIndex_ = (unsigned)input->AddScreenJoystick(layout, cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
     input->SetScreenJoystickVisible(screenJoystickSettingsIndex_, true);
 }
