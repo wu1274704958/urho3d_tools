@@ -108,7 +108,7 @@ void Decals::CreateScene()
     light->SetCastShadows(true);
     light->SetShadowBias(BiasParameters(0.00025f, 0.5f));
     // Set cascade splits at 10, 50 and 200 world units, fade shadows out at 80% of maximum shadow distance
-    light->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
+    light->SetShadowCascade(CascadeParameters(100.0f, 500.0f, 2000.0f, 0.0f, 0.8f));
 
     // Create some mushrooms
     const unsigned NUM_MUSHROOMS = 240;

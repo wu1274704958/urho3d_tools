@@ -68,6 +68,7 @@ public:
     virtual bool is_fullscreen();
 
 protected:
+    virtual void ConfigureRenderer();
     /// Return XML patch instructions for screen joystick layout for a specific sample app, if any.
     virtual String GetScreenJoystickPatchString() const { return String::EMPTY; }
     /// Initialize touch input on mobile platform.
