@@ -82,6 +82,9 @@ build/
 /CMakeSettings.json
 /out/
 
+# Visual Studio Code settings
+/*.vscode
+
 # CMake generated build files
 CMakeCache.txt
 CMakeFiles/
