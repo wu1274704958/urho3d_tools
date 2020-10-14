@@ -34,6 +34,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/UI/Window.h>
+#include <Urho3D/UI/Font.h>
 
 #include "HelloGUI.h"
 
@@ -78,6 +79,7 @@ void HelloGUI::Start()
 
 void HelloGUI::InitControls()
 {
+    auto* cache = GetSubsystem<ResourceCache>();
     // Create a CheckBox
     auto* checkBox = new CheckBox(context_);
     checkBox->SetName("CheckBox");
@@ -90,7 +92,7 @@ void HelloGUI::InitControls()
     // Create a LineEdit
     auto* lineEdit = new LineEdit(context_);
     lineEdit->SetName("LineEdit");
-    lineEdit->SetMinHeight(24);
+    lineEdit->SetMinHeight(32);
 
     // Add controls to Window
     window_->AddChild(checkBox);
@@ -101,6 +103,8 @@ void HelloGUI::InitControls()
     checkBox->SetStyleAuto();
     button->SetStyleAuto();
     lineEdit->SetStyleAuto();
+    lineEdit->GetTextElement()->SetFont(cache->GetResource<Font>("Fonts/happy.ttf"), 28);
+    
 }
 
 void HelloGUI::InitWindow()

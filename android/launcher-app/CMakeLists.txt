@@ -40,3 +40,4 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/01_HelloWorld
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/03_Sprites Sprites)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/06_SkeletalAnimation 06_SkeletalAnimation)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/08_Decals 08_Decals)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/../../Source/Samples/02_HelloGUI 02_HelloGUI)
