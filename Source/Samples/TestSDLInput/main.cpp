@@ -48,13 +48,14 @@ int main(int argc, char** argv)
                 {
                     SDL_StartTextInput();
                     //int ret = SDL_SetWindowInputFocus(window);
+                    auto active = SDL_IsTextInputActive();
                     SDL_Rect rect;
                     rect.x = event.motion.x;
                     rect.y = event.motion.y;
                     rect.w = 50;
                     rect.h = 50;
                     SDL_SetTextInputRect(&rect);
-                    printf("mouse button down! %d %d\n",event.motion.x,event.motion.y);
+                    printf("mouse button down! %d %d is active %d\n",event.motion.x,event.motion.y,active);
                 }
                 break;
                 case SDL_KEYUP:
