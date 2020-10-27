@@ -74,6 +74,7 @@ int main(int argc, char** argv)
                 case SDL_TEXTINPUT:
                     /* Add new text onto the end of our text */
                     strcat(text, event.text.text);
+                    printf("text input  : %s\n",event.edit.text);
                     break;
                 case SDL_TEXTEDITING:
                     /*
@@ -81,9 +82,11 @@ int main(int argc, char** argv)
                     Update the cursor position.
                     Update the selection length (if any).
                     */
+                    
                     strcpy(composition,event.edit.text);
                     cursor = event.edit.start;
                     selection_len = event.edit.length;
+                    printf("text editing : %d %s\n",cursor, event.edit.text);
                     break;
             }
         }
