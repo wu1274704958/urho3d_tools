@@ -23,6 +23,9 @@ Sint32 selection_len = 0;
 #ifdef WIN32
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) 
 { 
+#else
+int main(int argc, char** argv) 
+{ 
 #endif
     SDL_bool done = SDL_FALSE;
 
@@ -44,14 +47,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
                 case SDL_MOUSEBUTTONDOWN:
                 {
                     SDL_StartTextInput();
-                    int ret = SDL_SetWindowInputFocus(window);
+                    //int ret = SDL_SetWindowInputFocus(window);
                     SDL_Rect rect;
-                    rect.x = 0;
-                    rect.y = 0;
-                    rect.w = 300;
-                    rect.h = 400;
+                    rect.x = event.motion.x;
+                    rect.y = event.motion.y;
+                    rect.w = 50;
+                    rect.h = 50;
                     SDL_SetTextInputRect(&rect);
-                    printf("mouse button down! %d\n",ret);
+                    printf("mouse button down! %d %d\n",event.motion.x,event.motion.y);
+                }
+                break;
+                case SDL_KEYUP:
+                {
+                    if(event.key.keysym.sym == SDLK_o)
+                    {
+                        SDL_StopTextInput();
+                        printf("mouse button up \n");
+                    }
                 }
                 break;
                 case SDL_QUIT:
