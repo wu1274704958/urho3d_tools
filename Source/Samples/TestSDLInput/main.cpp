@@ -60,10 +60,10 @@ int main(int argc, char** argv)
                 break;
                 case SDL_KEYUP:
                 {
-                    if(event.key.keysym.sym == SDLK_o)
+                    if(event.key.keysym.sym == SDLK_ESCAPE)
                     {
                         SDL_StopTextInput();
-                        printf("mouse button up \n");
+                        printf("escape button up \n");
                     }
                 }
                 break;
